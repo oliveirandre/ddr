@@ -2,7 +2,7 @@ close all;
 clear all;
 
 %Parameters initialization:
-par.N= 60;       % Number of mobile nodes
+par.N= 90;       % Number of mobile nodes
 par.W= 40;       % Radio range (in meters)
 par.delta= 1;    % Time slot (in seconds)
 %par.AP = [200 150];   % Coordinates of each AP
@@ -20,7 +20,11 @@ for i=1:N
     [sim(i,1), sim(i,2)] = func(par,T);
 end
 
-sim
+alfa = 0.1;
+Average = mean(sim(:,1))
+Conf90Average = norminv(1-alfa/2)*sqrt(var(sim(:,1))/N)
+Minimum = mean(sim(:,2))
+Conf90Min = norminv(1-alfa/2)*sqrt(var(sim(:,2))/N)
 
 function [AverageAvailability, MinimumAvailability] = func(par, T)
 
