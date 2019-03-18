@@ -165,7 +165,7 @@ function [AverageAvailability, MinimumAvailability] = func(par, T)
     %
 
         C = zeros(par.N, 1);
-        L =[L;par.N+par.nAP-1,par.N+ par.nAP];
+        L =[L;par.N+par.nAP,par.N+ par.nAP];
         G = graph(L(:,1),L(:,2));
         d = distances(G);
 
