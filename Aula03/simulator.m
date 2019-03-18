@@ -42,7 +42,7 @@ for iter= 1:T
 end
 delete(h)
 % Compute the final result: 
-%[AverageAvailability, MinimumAvailability]= results(T,counter);
+[AverageAvailability, MinimumAvailability]= results(T,counter);
 [AverageAvailability, MinimumAvailability]
 
 function map= InitializeState(par)
@@ -172,7 +172,9 @@ function [AverageAvailability, MinimumAvailability]= results(T,counter)
 % This function computes the average and the minimum availability (values
 % between 0 and 1) based on array 'counter' and on the total number of
 % time slots T.
-
+    counter = counter/T;
+    AverageAvailability = mean(counter);
+    MinimumAvailability = min(counter)
 end
 
 function visualize(par,map,L,C,plotar)
