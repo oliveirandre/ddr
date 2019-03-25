@@ -2,15 +2,15 @@ close all;
 clear all;
 
 %Parameters initialization:
-par.N= 150;       % Number of mobile nodes
-par.W= 80;       % Radio range (in meters)
+par.N= 120;       % Number of mobile nodes
+par.W= 40;       % Radio range (in meters)
 par.delta= 1;    % Time slot (in seconds)
 %par.AP = [200 150];   % Coordinates of each AP
 %par.AP = [100 150;300 150];   % Coordinates of each AP
 %par.AP = [100 150;200 150;300 150];   % Coordinates of each AP
 par.AP = [100 100;300 100;100 200;300 200];   % Coordinates of each AP
 par.nAP = size(par.AP,1);  %Number of APs
-
+dhayduwa
 T= 3600;     % No. of time slots of the simulation
 
 N = 20;
