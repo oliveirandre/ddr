@@ -24,8 +24,8 @@ function res = simulator1(par)
     
     EventList = zeros(f,2);
 
-    %B = 64*0.19 + 1518*0.48 + (1517+65)/2*(1-0.19-0.49);
-    %Throughput = B * 8 / 10Mbps;
+    B = 64*0.19 + 1518*0.48 + (1517+65)/2*(1-0.19-0.49);
+    TempoMedioCheagadas = B * 8 / 1e7;
     
     %% EVENTS
     
@@ -33,11 +33,11 @@ function res = simulator1(par)
     % Departure - the termination of a packet transmission (indicated by 2)
     % Terminate - the termination of the simulation (indicated by a 0)
     
-    ARRIVAL = 1;
+    ARRIVAL =  1;
     DEPARTURE = 2;
     TERMINATE = 0;
     
-    EventList =[;par]
+    EventList =[exprnd(TempoMedioCheagadas) ARRIVAL; par.S TERMINATE];
     
     %% STATE VARIABLES
     
@@ -45,13 +45,21 @@ function res = simulator1(par)
     % QueueOcupation - total number of bytes of the QUEUED packets
     % Queue - structure with ARRIVAL_TIME and SIZE of each packet
     
+    State = 0;
+    Queue = [];
     
+    ARRIVAL_TIME = par.S;
+    SIZE = par.f;
     
     %% STATISCAL COUNTERS
     
     % TotalPackets - NUMBER of packets ARRIVED to the system
     % LostPackets - NUMBER of packets DISCARDED due to buffer overflow
     % TransmittedBytes - NUMBER of TRANSMITTED bytes
+
+    TotalPackets = 0;
+    LostPackets = 0;
+    TransmittedBytes = 0;
     
     
     
