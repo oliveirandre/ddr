@@ -25,7 +25,7 @@ function res = simulator1(par)
     EventList = zeros(f,2);
 
     B = 64*0.19 + 1518*0.48 + (1517+65)/2*(1-0.19-0.49);
-    TempoMedioCheagadas = B * 8 / 1e7;
+    TempoMedioCheagadas = B * 8 / par.r;
     
     %% EVENTS
     
@@ -37,7 +37,7 @@ function res = simulator1(par)
     DEPARTURE = 2;
     TERMINATE = 0;
     
-    EventList =[exprnd(TempoMedioCheagadas) ARRIVAL; par.S TERMINATE];
+    EventList = [exprnd(TempoMedioCheagadas) ARRIVAL; par.S TERMINATE];
     
     %% STATE VARIABLES
     
@@ -47,7 +47,7 @@ function res = simulator1(par)
     
     State = 0;
     Queue = [];
-    
+    QueueOcupation = 0;
     ARRIVAL_TIME = par.S;
     SIZE = par.f;
     
@@ -56,11 +56,11 @@ function res = simulator1(par)
     % TotalPackets - NUMBER of packets ARRIVED to the system
     % LostPackets - NUMBER of packets DISCARDED due to buffer overflow
     % TransmittedBytes - NUMBER of TRANSMITTED bytes
-
+    %TransmittedPackets - Number of TRANSMITTED packets
     TotalPackets = 0;
     LostPackets = 0;
     TransmittedBytes = 0;
-    
+    TransmittedPackets =0;
     
     
     %% AUXILIARY VARIABLES
@@ -69,8 +69,48 @@ function res = simulator1(par)
     % transmitted
     % Syze - SIZE, in bytes, of the packet that is being transmitted
     % Clock?
-    
-    
+    Instant = 0;
+    Syze = 0;
+    Clock = 0;
+    Delays = 0; 
+    %% Code
+    while EventList(1,2) != TERMINATE
+        switch EventList(1,2)
+            case ARRIVAL
+                EventList = EventList(2:SIZE(EventList),:);
+                TMP_Syze = packetsize();
+                TotalPackets = TotalPackets +1;
+                Clock = EventList(1,2) ;
+                EventList = [EventList; Clock+exprnd(TempoMedioCheagadas) ARRIVAL ];
+                if State == 0
+                    State = 1;
+                    Instant = Clock;
+                    Syze = TMP_Syze;
+                    Dep_time = Instant + (TMP_Syze*8)/1e4;
+                    EventList = [EventList; Dep_time DEPARTURE ];
+                
+                else
+                    if ( QueueOcupation + TMP_Syze < par.f)
+                        Queue = [Queue; Clock TMP_Syze];
+                        QueueOcupation = QueueOcupation + TMP_Syze;
+                    else    
+                        LostPackets = LostPackets +1;
+                    end
+                end
+                EventList = sortrows(EventList);
+            case DEPARTURE
+                Clock = EventList(1,2) ;
+                EventList = EventList(2:SIZE(EventList),:);
+                Delays = Delays + Clock-Instant;
+                
+        end
+    end
+
+
+
+
+
+
     %% FINAL CALCULATIONS
     
     %AvgPacketLoss = 100% * LostPackets/TotalPackets;
@@ -79,4 +119,18 @@ function res = simulator1(par)
     
     
     
+end
+
+
+function PacketSize = packetsize()
+    r = rand();
+    if(r < 0.19)
+        PacketSize = 64;
+        return 
+    end
+    if(r > 0.52)
+        PacketSize = 1518;
+        return
+    end
+    PacketSize = randi([65 1517]);
 end
