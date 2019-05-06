@@ -1,29 +1,33 @@
-par.r = 6000000; %bps
-par.f = 150000; %Bytes
+R = [6e6,8e6,9e6,9.5e6,9.75e6,10.0e6,...
+        6e6,8e6,9e6,9.5e6,9.75e6,10.0e6]; %bps
+F = [15e4,15e4,15e4,15e4,15e4,15e4,...
+        15e3,15e3,15e3,15e3,15e3,15e3]; %Bytes
 par.S = 1000; %seconds
 
-%out = simulator1(par);
+Cases = ['A','B','C','D','E','F','G','H','I','J','K','L'];
 
-%fprintf("Average Packet Loss (%%)= %f\n", out.AvgPacketLoss);
-%fprintf("Average Packet Delay (ms)= %f\n", out.AvgPacketDelay);
-%fprintf("Transmitted Throughput (Mbps)= %f\n", out.TransThroughput);
 
-N = 10;
-sim = zeros(N, 3);
-
-for i = 1:N
-    [sim(i,1), sim(i,2), sim(i,3)] = simulator1(par);
+for i = 1:12
+    par.r = R(i);
+    par.f = F(i);
+    parfor j = 1:10 
+        tic
+        out = simulator1(par);
+        toc
+        AVGPACKETLOSS(j) = out.AvgPacketLoss;
+        AVGPACKETDELAY(j) = out.AvgPacketDelay;
+        AVGTRANSTHPUT(j) = out.TransThroughput;
+    end
+    fprintf("%d %c %d %d \n",i,Cases(i),par.r,par.f)
+    fprintf("Average Packet Loss (%%)= %f\n",mean(AVGPACKETLOSS));
+    fprintf("Average Packet Delay (ms)= %f\n",mean(AVGPACKETDELAY));
+    fprintf("Transmitted Throughput (Mbps)= %f\n",mean(AVGTRANSTHPUT));
 end
-
-apl = mean(sim(:,1))
-apd = mean(sim(:,2))
-att = mean(sim(:,3))
 
 function res = simulator1(par)
 %function [AvgPacketLoss, AvgPacketDelay, TransThroughput] = simulator1(par)
     
-    EventList = zeros(f,2);
-
+    
     B = 64*0.19 + 1518*0.48 + (1517+65)/2*(1-0.19-0.49);
     TempoMedioCheagadas = B * 8 / par.r;
     
@@ -48,8 +52,6 @@ function res = simulator1(par)
     State = 0;
     Queue = [];
     QueueOcupation = 0;
-    ARRIVAL_TIME = par.S;
-    SIZE = par.f;
     
     %% STATISCAL COUNTERS
     
@@ -74,48 +76,56 @@ function res = simulator1(par)
     Clock = 0;
     Delays = 0; 
     %% Code
-    while EventList(1,2) != TERMINATE
+    while EventList(1,2) ~= TERMINATE
         switch EventList(1,2)
             case ARRIVAL
-                EventList = EventList(2:SIZE(EventList),:);
                 TMP_Syze = packetsize();
                 TotalPackets = TotalPackets +1;
-                Clock = EventList(1,2) ;
+                Clock = EventList(1,1);
+                EventList = EventList(2:size(EventList,1),:);
                 EventList = [EventList; Clock+exprnd(TempoMedioCheagadas) ARRIVAL ];
                 if State == 0
                     State = 1;
                     Instant = Clock;
                     Syze = TMP_Syze;
-                    Dep_time = Instant + (TMP_Syze*8)/1e4;
+                    Dep_time = Instant + (TMP_Syze*8)/1e7;
                     EventList = [EventList; Dep_time DEPARTURE ];
                 
                 else
-                    if ( QueueOcupation + TMP_Syze < par.f)
+                    if ( QueueOcupation + TMP_Syze <= par.f)
                         Queue = [Queue; Clock TMP_Syze];
                         QueueOcupation = QueueOcupation + TMP_Syze;
                     else    
                         LostPackets = LostPackets +1;
                     end
                 end
-                EventList = sortrows(EventList);
             case DEPARTURE
-                Clock = EventList(1,2) ;
-                EventList = EventList(2:SIZE(EventList),:);
+                Clock = EventList(1,1);
+                EventList = EventList(2:size(EventList,1),:);
                 Delays = Delays + Clock-Instant;
+                TransmittedBytes = TransmittedBytes +Syze;
+                TransmittedPackets = TransmittedPackets + 1;
+                if(QueueOcupation > 0 )
+                   Instant = Queue(1,1);
+                   Syze = Queue(1,2);
+                   Dep_time = Clock + (Syze*8)/1e7;
+                   EventList = [EventList; Dep_time DEPARTURE ];
+                   Queue = Queue(2:size(Queue,1),:);
+                   QueueOcupation = QueueOcupation - Syze;
+                else
+                    State = 0;
+                end
                 
         end
+        EventList = sortrows(EventList);
+
     end
-
-
-
-
-
-
     %% FINAL CALCULATIONS
     
-    %AvgPacketLoss = 100% * LostPackets/TotalPackets;
-    %AvgPacketDelay = 1000 * Delays/TransmittedPackets;
-    %TransThroughput = 8 * TransmittedBytes * 10e-6 / S;
+    
+    res.AvgPacketLoss = 1 * LostPackets/TotalPackets;
+    res.AvgPacketDelay = 1000 * Delays/TransmittedPackets;
+    res.TransThroughput = 8 * TransmittedBytes * 1e-6 / par.S;
     
     
     
