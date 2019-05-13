@@ -123,7 +123,7 @@ function res = simulator1(par)
     %% FINAL CALCULATIONS
     
     
-    res.AvgPacketLoss = 1 * LostPackets/TotalPackets;
+    res.AvgPacketLoss = 100 * LostPackets/TotalPackets;
     res.AvgPacketDelay = 1000 * Delays/TransmittedPackets;
     res.TransThroughput = 8 * TransmittedBytes * 1e-6 / par.S;
     
