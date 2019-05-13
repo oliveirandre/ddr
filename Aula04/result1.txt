@@ -1,0 +1,169 @@
+>> Simulator1
+Elapsed time is 33.455034 seconds.
+Elapsed time is 32.150537 seconds.
+Elapsed time is 32.195057 seconds.
+Elapsed time is 32.228520 seconds.
+Elapsed time is 32.120984 seconds.
+Elapsed time is 32.198722 seconds.
+Elapsed time is 32.095031 seconds.
+Elapsed time is 32.136822 seconds.
+Elapsed time is 32.081499 seconds.
+Elapsed time is 32.213619 seconds.
+1 A 6000000 150000
+Average Packet Loss (%)= 0.000000
+Average Packet Delay (ms)= 1.639329
+Transmitted Throughput (Mbps)= 6.047174
+Elapsed time is 43.589436 seconds.
+Elapsed time is 43.389427 seconds.
+Elapsed time is 43.289519 seconds.
+Elapsed time is 43.579904 seconds.
+Elapsed time is 43.641135 seconds.
+Elapsed time is 43.444545 seconds.
+Elapsed time is 43.709256 seconds.
+Elapsed time is 43.439329 seconds.
+Elapsed time is 43.520947 seconds.
+Elapsed time is 43.366106 seconds.
+2 B 8000000 150000
+Average Packet Loss (%)= 0.000000
+Average Packet Delay (ms)= 3.095549
+Transmitted Throughput (Mbps)= 8.067906
+Elapsed time is 49.645767 seconds.
+Elapsed time is 49.167228 seconds.
+Elapsed time is 49.345218 seconds.
+Elapsed time is 49.370491 seconds.
+Elapsed time is 49.107909 seconds.
+Elapsed time is 49.115219 seconds.
+Elapsed time is 49.237503 seconds.
+Elapsed time is 49.329798 seconds.
+Elapsed time is 49.339105 seconds.
+Elapsed time is 49.743293 seconds.
+3 C 9000000 150000
+Average Packet Loss (%)= 0.000000
+Average Packet Delay (ms)= 6.144400
+Transmitted Throughput (Mbps)= 9.064163
+Elapsed time is 52.568888 seconds.
+Elapsed time is 53.083214 seconds.
+Elapsed time is 52.133432 seconds.
+Elapsed time is 51.907055 seconds.
+Elapsed time is 51.942554 seconds.
+Elapsed time is 51.950867 seconds.
+Elapsed time is 52.001996 seconds.
+Elapsed time is 51.947653 seconds.
+Elapsed time is 52.008791 seconds.
+Elapsed time is 52.057891 seconds.
+4 D 9500000 150000
+Average Packet Loss (%)= 0.000004
+Average Packet Delay (ms)= 13.186128
+Transmitted Throughput (Mbps)= 9.574656
+Elapsed time is 53.941432 seconds.
+Elapsed time is 53.684911 seconds.
+Elapsed time is 53.659525 seconds.
+Elapsed time is 53.646362 seconds.
+Elapsed time is 53.665332 seconds.
+Elapsed time is 53.376073 seconds.
+Elapsed time is 53.792359 seconds.
+Elapsed time is 53.549580 seconds.
+Elapsed time is 53.486438 seconds.
+Elapsed time is 53.548729 seconds.
+5 E 9750000 150000
+Average Packet Loss (%)= 0.000266
+Average Packet Delay (ms)= 28.691883
+Transmitted Throughput (Mbps)= 9.815369
+Elapsed time is 55.173464 seconds.
+Elapsed time is 55.340861 seconds.
+Elapsed time is 55.483770 seconds.
+Elapsed time is 55.579917 seconds.
+Elapsed time is 55.470398 seconds.
+Elapsed time is 55.641480 seconds.
+Elapsed time is 55.281367 seconds.
+Elapsed time is 55.467384 seconds.
+Elapsed time is 55.525244 seconds.
+Elapsed time is 55.492303 seconds.
+6 F 10000000 150000
+Average Packet Loss (%)= 0.007040
+Average Packet Delay (ms)= 77.453578
+Transmitted Throughput (Mbps)= 9.983111
+Elapsed time is 31.919111 seconds.
+Elapsed time is 31.989007 seconds.
+Elapsed time is 31.918318 seconds.
+Elapsed time is 31.847649 seconds.
+Elapsed time is 32.450495 seconds.
+Elapsed time is 32.222615 seconds.
+Elapsed time is 31.803844 seconds.
+Elapsed time is 31.851528 seconds.
+Elapsed time is 31.893729 seconds.
+Elapsed time is 32.167189 seconds.
+7 G 6000000 15000
+Average Packet Loss (%)= 0.000018
+Average Packet Delay (ms)= 1.636070
+Transmitted Throughput (Mbps)= 6.042014
+Elapsed time is 43.478868 seconds.
+Elapsed time is 43.174778 seconds.
+Elapsed time is 43.164076 seconds.
+Elapsed time is 43.373492 seconds.
+Elapsed time is 43.144513 seconds.
+Elapsed time is 43.188940 seconds.
+Elapsed time is 43.079497 seconds.
+Elapsed time is 43.086603 seconds.
+Elapsed time is 43.032236 seconds.
+Elapsed time is 42.988730 seconds.
+8 H 8000000 15000
+Average Packet Loss (%)= 0.001672
+Average Packet Delay (ms)= 2.939718
+Transmitted Throughput (Mbps)= 8.039584
+Elapsed time is 48.737089 seconds.
+Elapsed time is 48.641688 seconds.
+Elapsed time is 48.446777 seconds.
+Elapsed time is 48.339793 seconds.
+Elapsed time is 48.421443 seconds.
+Elapsed time is 48.530739 seconds.
+Elapsed time is 48.681777 seconds.
+Elapsed time is 48.561063 seconds.
+Elapsed time is 48.730815 seconds.
+Elapsed time is 48.545905 seconds.
+9 I 9000000 15000
+Average Packet Loss (%)= 0.009604
+Average Packet Delay (ms)= 4.445735
+Transmitted Throughput (Mbps)= 8.946400
+Elapsed time is 51.073761 seconds.
+Elapsed time is 51.063369 seconds.
+Elapsed time is 51.253837 seconds.
+Elapsed time is 51.295925 seconds.
+Elapsed time is 51.625195 seconds.
+Elapsed time is 50.909928 seconds.
+Elapsed time is 51.015374 seconds.
+Elapsed time is 51.075841 seconds.
+Elapsed time is 51.417628 seconds.
+Elapsed time is 51.403829 seconds.
+10 J 9500000 15000
+Average Packet Loss (%)= 0.019449
+Average Packet Delay (ms)= 5.455624
+Transmitted Throughput (Mbps)= 9.313833
+Elapsed time is 52.808481 seconds.
+Elapsed time is 53.398018 seconds.
+Elapsed time is 52.489037 seconds.
+Elapsed time is 52.709593 seconds.
+Elapsed time is 52.729651 seconds.
+Elapsed time is 52.517581 seconds.
+Elapsed time is 52.625771 seconds.
+Elapsed time is 52.386760 seconds.
+Elapsed time is 52.351721 seconds.
+Elapsed time is 52.637218 seconds.
+11 K 9750000 15000
+Average Packet Loss (%)= 0.026496
+Average Packet Delay (ms)= 5.992786
+Transmitted Throughput (Mbps)= 9.463199
+Elapsed time is 53.866789 seconds.
+Elapsed time is 54.215979 seconds.
+Elapsed time is 54.110257 seconds.
+Elapsed time is 54.013992 seconds.
+Elapsed time is 54.099547 seconds.
+Elapsed time is 54.014776 seconds.
+Elapsed time is 53.729745 seconds.
+Elapsed time is 53.839606 seconds.
+Elapsed time is 53.887343 seconds.
+Elapsed time is 53.726685 seconds.
+12 L 10000000 15000
+Average Packet Loss (%)= 0.034920
+Average Packet Delay (ms)= 6.546350
+Transmitted Throughput (Mbps)= 9.593347
