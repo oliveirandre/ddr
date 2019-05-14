@@ -121,15 +121,13 @@ function res = simulator2(par)
                     Instant(Link) = Queue{Link}(1);
                     Syze(Link) = Queue{Link}(2);
                     Dep_time = Clock + (Syze(Link)*8)/1e7;
-                    flow1 = Queue{Link}(3);
-                    CurrentPath = par.J{flow1}
-                    flow1(end)
+                    flow1 = Queue{Link}(2);
+                    CurrentPath = par.J{Flow};
                     if(flow1(end) == Link)
                         EventList = [EventList; Dep_time DEPARTURE flow1 Link];
                     else
-                        nextLink = CurrentPath(find(flow1 == Link));
-                        flow1
-                        nextLink
+                        nextLink = CurrentPath(find(flow1 == Link)+1);
+                        dep = nextLink
                         
                         EventList = [ EventList; Dep_time RETRANSMIT flow1 nextLink ]
                     end
@@ -150,8 +148,8 @@ function res = simulator2(par)
                     Instant(Link) = Queue{Link}(1);
                     Syze(Link) = Queue{Link}(2);
                     Dep_time = Clock + (Syze(Link)*8)/1e7;
-                    flow1 = Queue{Link}(3);
-                    CurrentPath = par.J{flow1}
+                    CurrentPath = par.J{Flow};
+                    flow1 = Queue{Link}(2);
                     if(flow1(end) == Link)
                         EventList = [EventList; Dep_time DEPARTURE flow1 Link];
                     else
