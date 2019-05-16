@@ -4,9 +4,9 @@ par.J{2}= [1 2]; %routing path of flow 2
 par.J{3}= [2]; %routing path of flow 3
 par.C= [5e6 10e6]; %bps
 par.f= [150e3 150e3]; %Bytes
-par.S= 10; %seconds
+par.S= 1000; %seconds
 tic
-out = simulator2(par);
+out = simulator(par);
 toc
 for a= 1:length(par.r)
  fprintf("Average Packet Loss (%%)= %f\n",out.AvgPacketLoss(a));
@@ -14,7 +14,7 @@ for a= 1:length(par.r)
 end
 
 
-function res = simulator2(par)
+function res = simulator(par)
     
     
     %% EVENTS
@@ -46,6 +46,7 @@ function res = simulator2(par)
     % Queue - structure with ARRIVAL_TIME and SIZE of each packet, [link1][link2][link3]
     
     State = zeros(1,length(par.C));
+    
     Queue = cell(1,length(par.C));
     QueueOcupation = zeros(1,length(par.C));
     
@@ -81,21 +82,20 @@ function res = simulator2(par)
         switch EventList(1,2)
             case ARRIVAL
                 TMP_Syze = packetsize();
-                TotalPackets = TotalPackets +1;
                 Clock = EventList(1,1);
                 Flow = EventList(1,3);
                 Link = EventList(1,4);
                 Next_Packet = exprnd(TempoMedioCheagadas(Flow))+ Clock;
-                
+                TotalPackets(Flow) = TotalPackets(Flow) +1;
                 EventList = EventList(2:size(EventList,1),:);
                 EventList = [EventList; Next_Packet ARRIVAL Flow Link ];
-                if State == 0
-                    State = 1;
+                if State(Link) == 0
+                    State(Link) = 1;
                     Instant(Link) = Clock;
                     Syze(Link) = TMP_Syze;
-                    Dep_time = Instant(Link) + (TMP_Syze*8)/1e7;
+                    Dep_time = Instant(Link) + (TMP_Syze*8)/par.C(Link);  %%%%%%%%%%%%%%%%%%%%%%%%%%
                     CurrentPath = par.J{Flow};
-                    if(CurrentPath(end) == Link)
+                    if(CurrentPath(end) == Link)    
                         EventList = [EventList; Dep_time DEPARTURE Flow Link];
                     else
                         nextLink = CurrentPath(find(CurrentPath == Link)+1);
@@ -118,56 +118,72 @@ function res = simulator2(par)
                 TransmittedBytes(Flow) = TransmittedBytes(Flow) +Syze(Link);
                 TransmittedPackets(Flow) = TransmittedPackets(Flow) + 1;
                 if(QueueOcupation(Link) > 0 )
-                    Instant(Link) = Queue{Link}(1);
-                    Syze(Link) = Queue{Link}(2);
-                    Dep_time = Clock + (Syze(Link)*8)/1e7;
-                    flow1 = Queue{Link}(3);
-                    CurrentPath = par.J{flow1}
-                    flow1(end)
-                    if(flow1(end) == Link)
+                    queuetmp = Queue{Link}(1,:);
+                    Instant(Link) = queuetmp(1);
+                    Syze(Link) = queuetmp(2);
+                    Dep_time = Clock + (Syze(Link)*8)/par.C(Link);
+                    flow1 = queuetmp(3);
+                    CurrentPath = par.J{flow1};
+                    if(CurrentPath(end) == Link)
                         EventList = [EventList; Dep_time DEPARTURE flow1 Link];
                     else
-                        nextLink = CurrentPath(find(flow1 == Link));
-                        flow1
-                        nextLink
-                        
-                        EventList = [ EventList; Dep_time RETRANSMIT flow1 nextLink ]
+                        nextLink = CurrentPath(find(CurrentPath == Link)+1);
+                        EventList = [ EventList; Dep_time RETRANSMIT flow1 nextLink ];
                     end
-                   Queue = Queue(2:size(Queue,1),:);
-                   QueueOcupation = QueueOcupation - Syze(Link);
+                   Queue{Link} = Queue{Link}(2:end,:) ;
+                   QueueOcupation(Link) = QueueOcupation(Link) - Syze(Link);
                 else
-                    State = 0;
+                    State(Link) = 0;
                 end
             case RETRANSMIT
                 Clock = EventList(1,1);
                 Flow = EventList(1,3);
                 Link = EventList(1,4);
                 EventList = EventList(2:size(EventList,1),:);
-                Delays(Flow) = Delays(Flow) + Clock-Instant(Link);
-                TransmittedBytes(Flow) = TransmittedBytes(Flow) + Syze(Link);
-                TransmittedPackets(Flow) = TransmittedPackets(Flow) + 1;
-                if(QueueOcupation(Link) > 0 )
-                    Instant(Link) = Queue{Link}(1);
-                    Syze(Link) = Queue{Link}(2);
-                    Dep_time = Clock + (Syze(Link)*8)/1e7;
-                    flow1 = Queue{Link}(3);
-                    CurrentPath = par.J{flow1}
-                    if(flow1(end) == Link)
-                        EventList = [EventList; Dep_time DEPARTURE flow1 Link];
+                CurrentPath = par.J{Flow};
+                
+                prevLink = CurrentPath(find(CurrentPath == Link)-1);
+                prevLinkInstant = Instant(prevLink);
+                prevSize = Syze(prevLink);
+                if(QueueOcupation(prevLink) > 0 )
+                    queuetmp = Queue{prevLink}(1,:);
+                    Instant(prevLink) = queuetmp(1);
+                    Syze(prevLink) = queuetmp(2);
+                    Dep_time = Clock + (queuetmp(2)*8)/par.C(prevLink);
+                    CurrentPath_Queue = par.J{queuetmp(3)};
+                    if(CurrentPath_Queue(end) == prevLink)
+                        EventList = [EventList; Dep_time DEPARTURE queuetmp(3) prevLink];
                     else
-                        nextLink = CurrentPath(find(flow1 == Link)+1);
-                        ret = nextLink
-                        EventList = [ EventList; Dep_time RETRANSMIT flow1 nextLink ];
+                        nextLink = CurrentPath(find(CurrentPath_Queue == Link));
+                        EventList = [ EventList; Dep_time RETRANSMIT queuetmp(3) nextLink ];
                     end
-                   Queue = Queue(2:size(Queue,1),:);
-                   QueueOcupation = QueueOcupation - Syze(Link);
-                elseif (QueueOcupation(Link) + TMP_Syze <= par.f(Link))
-                    Queue{Link} = [Queue{Link}; Clock TMP_Syze Flow];
-                    QueueOcupation(Link) = QueueOcupation(Link) + TMP_Syze;
+                   Queue{prevLink} = Queue{prevLink}(2:end,:) ;
+                   QueueOcupation(prevLink) = QueueOcupation(prevLink) - queuetmp(2);
+                else
+                    State(prevLink) = 0;
+                end
+                
+                if State(Link) == 0
+                    State(Link) = 1;
+                    Instant(Link) = prevLinkInstant;
+                    Syze(Link) = prevSize;
+                    Dep_time = Clock + (prevSize*8)/par.C(Link);  %%%%%%%%%%%%%%%%%%%%%%%%%%
+                    CurrentPath = par.J{Flow};
+                    if(CurrentPath(end) == Link)    
+                        EventList = [EventList; Dep_time DEPARTURE Flow Link];
+                    else
+                        nextLink = CurrentPath(find(CurrentPath == Link)+1);
+                        EventList = [ EventList; Dep_time RETRANSMIT Flow nextLink ];
+                    end
+                
+                elseif (QueueOcupation(Link) + prevSize <= par.f(Link))
+                    Queue{Link} = [Queue{Link}; prevLinkInstant prevSize Flow];
+                    QueueOcupation(Link) = QueueOcupation(Link) + prevSize;
                 else
                     LostPackets(Flow) = LostPackets(Flow) + 1;
                 end
-                
+               
+                           
         end
         EventList = sortrows(EventList);
 
