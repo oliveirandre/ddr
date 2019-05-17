@@ -1,18 +1,38 @@
-par.r= [1e6 3e6 6e6]; %bps
-par.J{1}= [1]; %routing path of flow 1
+%% e)
+% par.r= [4e6]; %bps
+% par.J{1}= [1 2]; %routing path of flow 2
+% par.C= [10e6 5e6]; %bps
+% par.f= [150e3 150e3]; %Bytes
+% par.S= 1000; %seconds
+
+%% f)
+
+par.r= [7.4e6 2.3e6 2.5e6]; %bps
+par.J{1}= [1]; %routing path of flow 2
 par.J{2}= [1 2]; %routing path of flow 2
 par.J{3}= [2]; %routing path of flow 3
-par.C= [5e6 10e6]; %bps
+par.C= [10e6 5e6]; %bps
 par.f= [150e3 150e3]; %Bytes
 par.S= 1000; %seconds
-tic
-out = simulator(par);
-toc
-for a= 1:length(par.r)
- fprintf("Average Packet Loss (%%)= %f\n",out.AvgPacketLoss(a));
- fprintf("Average Packet Delay (ms)= %f\n",out.AvgPacketDelay(a));
-end
 
+fid = fopen("results2.txt","a");
+tic
+parfor k = 1:10
+        res(k) = simulator(par)
+end
+toc
+avgDelays = [res.AvgPacketDelay];
+avgPckLoss = [res.AvgPacketLoss];
+nFlows = size(par.r,2);
+for flow = 1:nFlows
+    avgDelaysPerFlow(flow) = mean(avgDelays(flow:nFlows:end));
+    avgPktLossPerFlow(flow) = mean(avgPckLoss(flow:nFlows:end));
+    confidenceDelaysPerFlow(flow) = norminv(1-0.1/2)*sqrt(var(avgDelays(flow:nFlows:end))/10);
+    confidencePktLossPerFlow(flow) = norminv(1-0.1/2)*sqrt(var(avgPckLoss(flow:nFlows:end))/10);
+    fprintf(fid,"%7d+-%7d\t%7d+-%7d\n",avgDelaysPerFlow(flow),confidenceDelaysPerFlow(flow),avgPktLossPerFlow(flow),confidencePktLossPerFlow(flow));
+end
+    
+    
 
 function res = simulator(par)
     
@@ -29,7 +49,7 @@ function res = simulator(par)
     DEPARTURE = 3;
     TERMINATE = 0;
 
-    B = 64*0.19 + 1518*0.48 + (1517+65)/2*(1-0.19-0.49);
+    B = 64*0.19 + 1518*0.48 + (1517+65)/2*(1-0.19-0.48);
     TempoMedioCheagadas = B * 8 ./ par.r;
 
     EventList =[];
@@ -102,13 +122,14 @@ function res = simulator(par)
                         EventList = [ EventList; Dep_time RETRANSMIT Flow nextLink ];
                     end
                 
-                elseif (QueueOcupation(Link) + TMP_Syze <= par.f(Link))
-                    Queue{Link} = [Queue{Link}; Clock TMP_Syze Flow];
-                    QueueOcupation(Link) = QueueOcupation(Link) + TMP_Syze;
                 else
-                    LostPackets(Flow) = LostPackets(Flow) + 1;
+                    if (QueueOcupation(Link) + TMP_Syze <= par.f(Link))
+                        Queue{Link} = [Queue{Link}; Clock TMP_Syze Flow];
+                        QueueOcupation(Link) = QueueOcupation(Link) + TMP_Syze;
+                    else
+                        LostPackets(Flow) = LostPackets(Flow) + 1;
+                    end
                 end
-
             case DEPARTURE
                 Clock = EventList(1,1);
                 Flow = EventList(1,3);
@@ -143,6 +164,7 @@ function res = simulator(par)
                 CurrentPath = par.J{Flow};
                 
                 prevLink = CurrentPath(find(CurrentPath == Link)-1);
+                Delays(Flow) = Delays(Flow) + Clock-Instant(prevLink);
                 prevLinkInstant = Instant(prevLink);
                 prevSize = Syze(prevLink);
                 if(QueueOcupation(prevLink) > 0 )
@@ -154,7 +176,7 @@ function res = simulator(par)
                     if(CurrentPath_Queue(end) == prevLink)
                         EventList = [EventList; Dep_time DEPARTURE queuetmp(3) prevLink];
                     else
-                        nextLink = CurrentPath(find(CurrentPath_Queue == Link));
+                        nextLink = CurrentPath_Queue(find(CurrentPath_Queue == prevLink)+1);
                         EventList = [ EventList; Dep_time RETRANSMIT queuetmp(3) nextLink ];
                     end
                    Queue{prevLink} = Queue{prevLink}(2:end,:) ;
@@ -177,7 +199,7 @@ function res = simulator(par)
                     end
                 
                 elseif (QueueOcupation(Link) + prevSize <= par.f(Link))
-                    Queue{Link} = [Queue{Link}; prevLinkInstant prevSize Flow];
+                    Queue{Link} = [Queue{Link};  Clock prevSize Flow];
                     QueueOcupation(Link) = QueueOcupation(Link) + prevSize;
                 else
                     LostPackets(Flow) = LostPackets(Flow) + 1;
