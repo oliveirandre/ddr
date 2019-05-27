@@ -1,3 +1,4 @@
+clear all;
 Matrices;
 nNodes= size(L,1);
 nPaths= 20;
@@ -16,5 +17,38 @@ for i=1:nNodes
 end
 nFlows= length(flowDemand);
 %solution that considers the first candidate path for all flows:
-solution= ones(1,nFlows); 
-worstlinkload= maxLoad(solution,shortestPaths,flowDemand,R)
+solution= ones(1,nFlows);
+worstlinkload= maxLoad(solution,shortestPaths,flowDemand,R);
+
+improved = true;
+contador= 0;
+while improved
+    contador= contador + 1;
+    [contador worstlinkload]
+    bestneighbor = [];
+    valuedofbest = worstlinkload;
+    for f = 1:nFlows
+        for k = 1:length(shortestPaths{f})
+            if k ~= solution(f)
+                solution_tmp = solution;
+                solution_tmp(f) = k;
+                worstlinkload_tmp = maxLoad(solution_tmp,shortestPaths,flowDemand,R);
+                if(worstlinkload_tmp < valuedofbest)
+                    valuedofbest = worstlinkload_tmp;
+                    bestneighbor = solution_tmp;
+                end
+            end
+        end
+    end
+
+    if(valuedofbest < worstlinkload)
+        worstlinkload = valuedofbest;
+        solution = bestneighbor;
+    else
+        improved = false;
+    end
+end
+fprintf("worst link load: %d  \n",worstlinkload)
+
+
+
