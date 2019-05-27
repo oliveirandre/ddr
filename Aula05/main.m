@@ -50,5 +50,5 @@ while improved
 end
 fprintf("worst link load: %d  \n",worstlinkload)
 
-
+% Com o K a aumentar até 5 tem peso significativo, porem a partir deste o valor do worst link load não muda signativamente 
 
