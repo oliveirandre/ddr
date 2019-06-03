@@ -2,19 +2,44 @@ clear all;
 Matrices;
 nNodes= size(L,1);
 nPaths= 5;
-worstLinkQueue = zeros(length(R),2);
+worstLinkQueue = zeros(length(R),4);
+worstLinkLoadtemp = inf;
+bestpx = 0;
+bestpy = 0;
+Finish = true;
 
-
+while Finish 
     for i=1:length(R)
         for j=1:length(R)
-            worstLinkLoad1 = localSearch(R,L,T,nNodes, nPaths);
-            worstLinkQueue = [worstLinkQueue; [i,j], worstLinkLoad1];
+            if R(i,j) > 0
+                Raux =R;
+                Raux(i,j) = 0;
+                Raux(j,i) = 0;
+                Laux = L;
+                Laux(i,j) = inf;
+                Laux(j,i) = inf;
+                worstLinkLoad = localSearch(Raux,Laux,T,nNodes);
+                if(worstLinkLoad < worstLinkLoadtemp)
+                    worstLinkLoadtemp = worstLinkLoad;
+                    bestpx = i;
+                    bestpy = j;
+                end
+            end
         end
     end
+    
+    worstLinkQueue = [worstLinkQueue; bestpx,bestpy, worstLinkLoadtemp];
+    R(bestpx,bestpy) = 0;
+    L(bestpx,bestpy) = 0;
+    
+    Finish=false;
+end
     worstLinkQueue
-
-function worstLink = localSearch(R,L,T,nNodes, nPaths)
-
+    
+    
+    
+function worstlinkload = localSearch(R,L,T,nNodes)
+    nPaths = 5;
     f= 0;
     for i=1:nNodes
         for j= 1:nNodes
@@ -23,7 +48,8 @@ function worstLink = localSearch(R,L,T,nNodes, nPaths)
                 flowDemand(f) = T(i,j);
                 [shortestPaths{f}, tc] = kShortestPath(L, i, j, nPaths);
                 if isempty(tc)
-                    fprintf('Error: no connectivity\n');
+                    worstlinkload = inf;
+                    return;
                 end
             end
         end
