@@ -1,18 +1,19 @@
 clear all;
 Matrices;
 nNodes= size(L,1);
-nPaths= 20;
-worstLinkQueue = [];
+nPaths= 5;
+worstLinkQueue = zeros(length(R),2);
 
-while finito
+
     for i=1:length(R)
         for j=1:length(R)
-            worstLinkLoad = localSearch(nNodes, nPaths);
+            worstLinkLoad1 = localSearch(R,L,T,nNodes, nPaths);
+            worstLinkQueue = [worstLinkQueue; [i,j], worstLinkLoad1];
         end
     end
-end
+    worstLinkQueue
 
-function worstLinkLoad = localSearch(nNodes, nPaths)
+function worstLink = localSearch(R,L,T,nNodes, nPaths)
 
     f= 0;
     for i=1:nNodes
@@ -36,7 +37,7 @@ function worstLinkLoad = localSearch(nNodes, nPaths)
     contador= 0;
     while improved
         contador= contador + 1;
-        [contador worstlinkload]
+        [contador worstlinkload];
         bestneighbor = [];
         valuedofbest = worstlinkload;
         for f = 1:nFlows
@@ -60,6 +61,4 @@ function worstLinkLoad = localSearch(nNodes, nPaths)
             improved = false;
         end
     end
-    fprintf("worst link load: %d  \n",worstlinkload)
-
 end
