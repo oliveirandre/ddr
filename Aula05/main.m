@@ -1,7 +1,7 @@
 clear all;
 Matrices;
 nNodes= size(L,1);
-nPaths= 20;
+nPaths= 5;
 f= 0;
 for i=1:nNodes
     for j= 1:nNodes
@@ -50,5 +50,4 @@ while improved
 end
 fprintf("worst link load: %d  \n",worstlinkload)
 
-% Com o K a aumentar até 5 tem peso significativo, porem a partir deste o valor do worst link load não muda signativamente 
 

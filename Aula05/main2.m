@@ -31,7 +31,17 @@ while Finish
     worstLinkQueue = [worstLinkQueue; bestpx,bestpy, worstLinkLoadtemp];
     R(bestpx,bestpy) = 0;
     L(bestpx,bestpy) = 0;
-    
+    for i=1:length(R)
+        for j=1:length(R)
+            if R(i,j) > 0
+                worstLinkLoad = localSearch(R,L,T,nNodes);
+                    worstLinkLoadtemp = worstLinkLoad;
+                    bestpx = i;
+                    bestpy = j;
+                end
+            end
+        end
+    end
     Finish=false;
 end
     worstLinkQueue
