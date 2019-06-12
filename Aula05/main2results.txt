@@ -1,0 +1,38 @@
+New search with 0 links removed
+Found: (1,2) worst link load: 0.648000, Energy: 38.000000 Ratio: 0.017053
+Found: (2,5) worst link load: 0.641000, Energy: 38.000000 Ratio: 0.016868
+Found: (3,4) worst link load: 0.614000, Energy: 38.000000 Ratio: 0.016158
+Found: (4,5) worst link load: 0.597000, Energy: 38.000000 Ratio: 0.015711
+Removed: (4,5) worst link load: 0.597000, Energy: 38.000000 Ratio: 0.015711
+New search with 1 links removed
+Found: (1,2) worst link load: 0.720000, Energy: 37.000000 Ratio: 0.019459
+Found: (1,11) worst link load: 0.597000, Energy: 36.000000 Ratio: 0.016583
+Removed: (1,11) worst link load: 0.597000, Energy: 37.000000 Ratio: 0.016583
+New search with 2 links removed
+Found: (1,2) worst link load: 0.720000, Energy: 35.000000 Ratio: 0.020571
+Found: (2,3) worst link load: 0.697000, Energy: 35.000000 Ratio: 0.019914
+Found: (3,4) worst link load: 0.639000, Energy: 35.000000 Ratio: 0.018257
+Removed: (3,4) worst link load: 0.639000, Energy: 35.000000 Ratio: 0.018257
+New search with 3 links removed
+Found: (1,2) worst link load: 0.765000, Energy: 34.000000 Ratio: 0.022500
+Found: (2,3) worst link load: 0.697000, Energy: 34.000000 Ratio: 0.020500
+Found: (10,12) worst link load: 0.652000, Energy: 34.000000 Ratio: 0.019176
+Removed: (10,12) worst link load: 0.652000, Energy: 34.000000 Ratio: 0.019176
+New search with 4 links removed
+Found: (1,2) worst link load: 0.744000, Energy: 33.000000 Ratio: 0.022545
+Found: (8,11) worst link load: 0.681000, Energy: 33.000000 Ratio: 0.020636
+Found: (13,15) worst link load: 0.669000, Energy: 33.000000 Ratio: 0.020273
+Removed: (13,15) worst link load: 0.669000, Energy: 33.000000 Ratio: 0.020273
+New search with 5 links removed
+Found: (1,2) worst link load: 0.825000, Energy: 32.000000 Ratio: 0.025781
+Found: (2,3) worst link load: 0.823000, Energy: 32.000000 Ratio: 0.025719
+Found: (2,5) worst link load: 0.812000, Energy: 32.000000 Ratio: 0.025375
+Removed: (2,5) worst link load: 0.812000, Energy: 32.000000 Ratio: 0.025375
+New search with 6 links removed
+Found: (1,2) worst link load: 1.488000, Energy: 31.000000 Ratio: 0.048000
+Found: (2,3) worst link load: 1.318000, Energy: 31.000000 Ratio: 0.042516
+Found: (5,7) worst link load: 0.835000, Energy: 28.000000 Ratio: 0.029821
+Found: (6,9) worst link load: 0.887000, Energy: 31.000000 Ratio: 0.028613
+Found: (8,11) worst link load: 0.885000, Energy: 31.000000 Ratio: 0.028548
+Removed: (8,11) worst link load: 0.885000, Energy: 31.000000 Ratio: 0.028548
+Simulation end

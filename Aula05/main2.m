@@ -2,51 +2,67 @@ clear all;
 Matrices;
 nNodes= size(L,1);
 nPaths= 5;
-worstLinkQueue = zeros(length(R),4);
-worstLinkLoadtemp = inf;
+
+Rold = R;
+Cold = C;
+Lold = L;
+Rnew = R;
+Cnew = C;
+Lnew = L;
 bestpx = 0;
 bestpy = 0;
-Finish = true;
+removedlinks = 0;
+finish = false;
 
-while Finish 
-    for i=1:length(R)
-        for j=1:length(R)
-            if R(i,j) > 0
-                Raux =R;
-                Raux(i,j) = 0;
-                Raux(j,i) = 0;
-                Laux = L;
-                Laux(i,j) = inf;
-                Laux(j,i) = inf;
-                worstLinkLoad = localSearch(Raux,Laux,T,nNodes);
-                if(worstLinkLoad < worstLinkLoadtemp)
-                    worstLinkLoadtemp = worstLinkLoad;
-                    bestpx = i;
-                    bestpy = j;
-                end
+while(~finish) 
+    fprintf("Removed links so far: %d\n", removedlinks);
+    [a, b] = size(R);
+    worstLinkLoad = 100;
+    ratio = inf;
+    bestpx = 0;
+    bestpy = 0;
+    for i=1:a-1
+        for j=i+1:a
+            R = Rold;            
+            if(R(i,j) == 0)
+                continue
+            end
+            R(i,j) = 0;
+            R(j,i) = 0;
+            C = Cold;
+            C(i,j) = 0;
+            C(j,i) = 0;                
+            L = Lold;
+            L(i,j) = inf;
+            L(j,i) = inf;
+                
+            worstLinkLoadtemp = localSearch(R,L,T,nNodes);
+            energy = sum(sum(C)) / 2;
+            ratiotemp = worstLinkLoadtemp/energy;
+            if(ratiotemp < ratio)
+                Rnew = R;
+                Cnew = C;
+                Lnew = L;
+                worstLinkLoad = worstLinkLoadtemp;
+                bestpx = i;
+                bestpy = j;
+                ratio = ratiotemp;
+                fprintf("Link: (%d,%d) / WorstLinkLoad: %f, Energy: %f Ratio: %f\n",bestpx, bestpy, worstLinkLoad, energy, ratio )
             end
         end
     end
     
-    worstLinkQueue = [worstLinkQueue; bestpx,bestpy, worstLinkLoadtemp];
-    R(bestpx,bestpy) = 0;
-    L(bestpx,bestpy) = 0;
-    for i=1:length(R)
-        for j=1:length(R)
-            if R(i,j) > 0
-                worstLinkLoad = localSearch(R,L,T,nNodes);
-                    worstLinkLoadtemp = worstLinkLoad;
-                    bestpx = i;
-                    bestpy = j;
-                end
-            end
-        end
+    fprintf("Removed link: (%d,%d)", bestpx, bestpy,)
+    if(worstLinkLoad > 0.85)
+        finish = true;
+        fprintf("End\n")
     end
-    Finish=false;
+    
+    Rold = Rnew;
+    Lold = Lnew;
+    Cold = Cnew;
+    removedlinks = removedlinks + 1;
 end
-    worstLinkQueue
-    
-    
     
 function worstlinkload = localSearch(R,L,T,nNodes)
     nPaths = 5;
