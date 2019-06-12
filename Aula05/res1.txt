@@ -1,0 +1,15 @@
+Elapsed time is 4.839892 seconds.
+Elapsed time is 10.067420 seconds.
+Elapsed time is 15.629641 seconds.
+Elapsed time is 21.168038 seconds.
+Elapsed time is 26.645538 seconds.
+Elapsed time is 33.597382 seconds.
+
+res =
+
+    0.6410
+    0.6410
+    0.6410
+    0.6410
+    0.6410
+    0.6410
